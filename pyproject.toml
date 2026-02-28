@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "autoreels"
+version = "0.1.0"
+description = "Autopilot faceless reels generator and publisher"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{ name = "AutoReels" }]
+license = { text = "MIT" }
+keywords = ["reels", "shorts", "tiktok", "instagram", "youtube", "automation"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+]
+
+[project.scripts]
+autoreels = "autoreels.cli:main"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
