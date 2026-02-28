@@ -1,0 +1,24 @@
+{
+  "brand_name": "Growth Lab",
+  "niche": "productivity",
+  "default_cta": "Follow for practical growth tactics.",
+  "voice": "alloy",
+  "hashtags": [
+    "#productivity",
+    "#selfimprovement",
+    "#mindset",
+    "#shorts"
+  ],
+  "topics": [
+    {
+      "topic": "How to stop procrastinating in 10 minutes",
+      "angle": "simple mental model",
+      "cta": "Follow for daily no-fluff habits."
+    },
+    {
+      "topic": "The 3-minute morning reset",
+      "angle": "high energy",
+      "cta": "Save this and try it tomorrow."
+    }
+  ]
+}
