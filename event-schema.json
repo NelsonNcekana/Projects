@@ -1,0 +1,567 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://datainno.local/schemas/event-schema.json",
+  "title": "Datainno AI Concierge Event",
+  "description": "Validation schema for structured guest journey events.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "event_type",
+    "event_timestamp",
+    "channel",
+    "conversation_id",
+    "event_metadata"
+  ],
+  "properties": {
+    "event_id": {
+      "description": "Unique event identifier (UUID preferred).",
+      "type": "string",
+      "minLength": 1
+    },
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "inquiry",
+        "booking_started",
+        "booking_completed",
+        "service_request",
+        "room_service",
+        "food_order",
+        "complaint",
+        "recommendation_click",
+        "payment_initiated",
+        "payment_completed"
+      ]
+    },
+    "event_timestamp": {
+      "description": "ISO-8601 timestamp in UTC.",
+      "type": "string",
+      "format": "date-time"
+    },
+    "channel": {
+      "type": "string",
+      "enum": [
+        "whatsapp",
+        "telegram"
+      ]
+    },
+    "conversation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "customer_id": {
+      "description": "May be null when customer identity is unknown.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "stay_id": {
+      "description": "May be null when there is no active stay.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "reservation_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "message_id": {
+      "description": "Useful for deduplication and idempotency.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "staff_ticket_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "locale": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 2
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "guest",
+        "assistant",
+        "system"
+      ]
+    },
+    "event_metadata": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "inquiry"
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "event_metadata": {
+            "type": "object",
+            "additionalProperties": true,
+            "required": [
+              "question",
+              "response_time_seconds"
+            ],
+            "properties": {
+              "question": {
+                "type": "string",
+                "minLength": 1
+              },
+              "intent": {
+                "type": "string"
+              },
+              "response_time_seconds": {
+                "type": "number",
+                "minimum": 0
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "booking_started"
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "event_metadata": {
+            "type": "object",
+            "additionalProperties": true,
+            "required": [
+              "check_in_date",
+              "check_out_date",
+              "guests"
+            ],
+            "properties": {
+              "check_in_date": {
+                "type": "string",
+                "format": "date"
+              },
+              "check_out_date": {
+                "type": "string",
+                "format": "date"
+              },
+              "guests": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "room_type": {
+                "type": "string"
+              },
+              "promo_code": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "booking_completed"
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "required": [
+          "reservation_id"
+        ],
+        "properties": {
+          "reservation_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "event_metadata": {
+            "type": "object",
+            "additionalProperties": true,
+            "required": [
+              "reservation_id",
+              "check_in_date",
+              "check_out_date",
+              "room_type",
+              "total_amount",
+              "currency"
+            ],
+            "properties": {
+              "reservation_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "check_in_date": {
+                "type": "string",
+                "format": "date"
+              },
+              "check_out_date": {
+                "type": "string",
+                "format": "date"
+              },
+              "room_type": {
+                "type": "string"
+              },
+              "total_amount": {
+                "type": "number",
+                "minimum": 0
+              },
+              "currency": {
+                "type": "string",
+                "minLength": 3,
+                "maxLength": 3
+              },
+              "guests": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "rate_plan": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "service_request"
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "event_metadata": {
+            "type": "object",
+            "additionalProperties": true,
+            "required": [
+              "request_type",
+              "priority"
+            ],
+            "properties": {
+              "request_type": {
+                "type": "string"
+              },
+              "priority": {
+                "type": "string",
+                "enum": [
+                  "low",
+                  "normal",
+                  "high"
+                ]
+              },
+              "preferred_time": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "room_number": {
+                "type": "string"
+              },
+              "notes": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "room_service"
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "event_metadata": {
+            "type": "object",
+            "additionalProperties": true,
+            "required": [
+              "service_type"
+            ],
+            "properties": {
+              "service_type": {
+                "type": "string"
+              },
+              "priority": {
+                "type": "string",
+                "enum": [
+                  "low",
+                  "normal",
+                  "high"
+                ]
+              },
+              "room_number": {
+                "type": "string"
+              },
+              "preferred_time": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "food_order"
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "event_metadata": {
+            "type": "object",
+            "additionalProperties": true,
+            "required": [
+              "items"
+            ],
+            "properties": {
+              "items": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "string"
+                }
+              },
+              "amount": {
+                "type": "number",
+                "minimum": 0
+              },
+              "delivery_time": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "currency": {
+                "type": "string",
+                "minLength": 3,
+                "maxLength": 3
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "complaint"
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "event_metadata": {
+            "type": "object",
+            "additionalProperties": true,
+            "required": [
+              "summary"
+            ],
+            "properties": {
+              "summary": {
+                "type": "string",
+                "minLength": 1
+              },
+              "category": {
+                "type": "string"
+              },
+              "severity": {
+                "type": "string",
+                "enum": [
+                  "low",
+                  "medium",
+                  "high",
+                  "critical"
+                ]
+              },
+              "incident_time": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "recommendation_click"
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "event_metadata": {
+            "type": "object",
+            "additionalProperties": true,
+            "required": [
+              "recommendation_id"
+            ],
+            "properties": {
+              "recommendation_id": {
+                "type": "string"
+              },
+              "recommendation_type": {
+                "type": "string"
+              },
+              "target": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "payment_initiated"
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "event_metadata": {
+            "type": "object",
+            "additionalProperties": true,
+            "required": [
+              "amount",
+              "method"
+            ],
+            "properties": {
+              "amount": {
+                "type": "number",
+                "minimum": 0
+              },
+              "currency": {
+                "type": "string",
+                "minLength": 3,
+                "maxLength": 3
+              },
+              "method": {
+                "type": "string"
+              },
+              "payment_link_id": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "payment_completed"
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "event_metadata": {
+            "type": "object",
+            "additionalProperties": true,
+            "required": [
+              "amount",
+              "method",
+              "status"
+            ],
+            "properties": {
+              "amount": {
+                "type": "number",
+                "minimum": 0
+              },
+              "currency": {
+                "type": "string",
+                "minLength": 3,
+                "maxLength": 3
+              },
+              "method": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "success",
+                  "failed",
+                  "pending"
+                ]
+              },
+              "transaction_reference": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,4 +1,11 @@
 basePromptId: chat-agent-datainno-mvp-1
+prompt_metadata:
+  version: 1.1.0
+  format: yaml
+  default_language: en
+  supported_channels:
+    - whatsapp
+    - telegram
 
 # Datainno Analytics AI Concierge — hotel guest assistant (MVP → platform).
 # Aligns with product documentation: smart chat, booking, recommendations,
@@ -171,6 +178,7 @@ state_management:
     - Ask only for the next missing field when practical
     - Do not repeat information the guest or system already provided
     - Advance only after the guest responds or new data arrives
+    - After completion or cancellation, clear flow-specific temporary state
 
   example_booking_flow:
     required_fields:
@@ -320,9 +328,85 @@ data_capture:
     Every interaction should contribute structured data to the AI Concierge
     platform for analytics, personalization, and operational insights.
 
+  schema_artifacts:
+    event_json_schema_path: ./event-schema.json
+    schema_version: 1.0.0
+    validation_mode: strict
+
   principle: >
     The agent is not only responding — it is also capturing meaningful events
     across the customer journey.
+
+  lifecycle_scope:
+    - reservation
+    - check_in
+    - stay
+    - activities
+    - check_out
+
+  storage_model:
+    entities:
+      - customers
+      - reservations
+      - stays
+      - events
+      - payments
+    relationships:
+      - 1 customer -> many reservations
+      - 1 reservation -> 1 stay
+      - 1 stay -> many events
+      - 1 stay -> many payments
+
+  table_keys:
+    customers:
+      primary_key: customer_id
+      key_fields:
+        - first_name
+        - last_name
+        - email
+        - phone
+        - nationality
+        - created_at
+    reservations:
+      primary_key: reservation_id
+      foreign_keys:
+        - customer_id
+      key_fields:
+        - room_type
+        - check_in_date
+        - check_out_date
+        - booking_channel
+        - total_amount
+        - status
+    stays:
+      primary_key: stay_id
+      foreign_keys:
+        - customer_id
+        - reservation_id
+      key_fields:
+        - actual_check_in
+        - actual_check_out
+        - room_number
+        - stay_status
+    events:
+      primary_key: event_id
+      foreign_keys:
+        - stay_id
+        - customer_id
+      key_fields:
+        - event_type
+        - event_timestamp
+        - source
+        - event_metadata
+    payments:
+      primary_key: payment_id
+      foreign_keys:
+        - stay_id
+      key_fields:
+        - amount
+        - payment_method
+        - payment_status
+        - timestamp
 
   event_logging:
 
@@ -335,10 +419,109 @@ data_capture:
       - booking_started
       - booking_completed
       - service_request
+      - room_service
+      - food_order
       - complaint
       - recommendation_click
       - payment_initiated
       - payment_completed
+
+  event_schema:
+
+    common_fields:
+      - event_type
+      - event_timestamp
+      - channel
+      - conversation_id
+      - customer_id
+      - stay_id
+      - event_metadata
+
+    optional_fields:
+      - reservation_id
+      - message_id
+      - staff_ticket_id
+      - locale
+      - source
+
+    required_fields:
+      - event_type
+      - event_timestamp
+      - channel
+      - conversation_id
+      - event_metadata
+
+    enums:
+      event_type:
+        - inquiry
+        - booking_started
+        - booking_completed
+        - service_request
+        - room_service
+        - food_order
+        - complaint
+        - recommendation_click
+        - payment_initiated
+        - payment_completed
+      channel:
+        - whatsapp
+        - telegram
+      source:
+        - guest
+        - assistant
+        - system
+
+    field_rules:
+      event_timestamp: ISO-8601 timestamp in UTC
+      customer_id: null allowed when unknown
+      stay_id: null allowed when no active stay
+      source: one of [guest, assistant, system]
+      event_metadata: must be valid JSON object
+
+    validation_contract:
+      event_type:
+        type: string
+        required: true
+        must_be_in_enum: event_schema.enums.event_type
+      event_timestamp:
+        type: string
+        required: true
+        format: date-time
+        timezone: UTC
+      channel:
+        type: string
+        required: true
+        must_be_in_enum: event_schema.enums.channel
+      conversation_id:
+        type: string
+        required: true
+        min_length: 1
+      customer_id:
+        type: string_or_null
+        required: false
+      stay_id:
+        type: string_or_null
+        required: false
+      reservation_id:
+        type: string_or_null
+        required: false
+      message_id:
+        type: string_or_null
+        required: false
+      staff_ticket_id:
+        type: string_or_null
+        required: false
+      locale:
+        type: string_or_null
+        required: false
+      source:
+        type: string
+        required: false
+        must_be_in_enum: event_schema.enums.source
+      event_metadata:
+        type: object
+        required: true
+        additional_properties: true
 
   metadata_guidelines: >
     Include relevant structured details depending on the event type.
@@ -347,6 +530,191 @@ data_capture:
     - service: request_type, priority
     - inquiry: question, response_time
     - payment: amount, method, status
+
+  event_metadata_by_type:
+    inquiry:
+      required_fields:
+        - question
+        - response_time_seconds
+      optional_fields:
+        - question
+        - intent
+        - response_time_seconds
+      field_types:
+        question: string
+        intent: string
+        response_time_seconds: number
+    booking_started:
+      required_fields:
+        - check_in_date
+        - check_out_date
+        - guests
+      optional_fields:
+        - room_type
+        - promo_code
+      field_types:
+        check_in_date: date
+        check_out_date: date
+        guests: integer
+        room_type: string
+        promo_code: string
+    booking_completed:
+      required_fields:
+        - reservation_id
+        - check_in_date
+        - check_out_date
+        - room_type
+        - total_amount
+        - currency
+      optional_fields:
+        - guests
+        - rate_plan
+      field_types:
+        reservation_id: string
+        check_in_date: date
+        check_out_date: date
+        room_type: string
+        total_amount: number
+        currency: string
+        guests: integer
+        rate_plan: string
+    service_request:
+      required_fields:
+        - request_type
+        - priority
+      optional_fields:
+        - preferred_time
+        - room_number
+        - notes
+      field_types:
+        request_type: string
+        priority: string
+        preferred_time: date-time
+        room_number: string
+        notes: string
+      enums:
+        priority:
+          - low
+          - normal
+          - high
+    room_service:
+      required_fields:
+        - service_type
+      optional_fields:
+        - priority
+        - room_number
+        - preferred_time
+      field_types:
+        service_type: string
+        priority: string
+        room_number: string
+        preferred_time: date-time
+      enums:
+        priority:
+          - low
+          - normal
+          - high
+    food_order:
+      required_fields:
+        - items
+      optional_fields:
+        - amount
+        - delivery_time
+        - currency
+      field_types:
+        items: array<string>
+        amount: number
+        delivery_time: date-time
+        currency: string
+    complaint:
+      required_fields:
+        - summary
+      optional_fields:
+        - category
+        - severity
+        - incident_time
+      field_types:
+        summary: string
+        category: string
+        severity: string
+        incident_time: date-time
+      enums:
+        severity:
+          - low
+          - medium
+          - high
+          - critical
+    recommendation_click:
+      required_fields:
+        - recommendation_id
+      optional_fields:
+        - recommendation_type
+        - target
+      field_types:
+        recommendation_id: string
+        recommendation_type: string
+        target: string
+    payment_initiated:
+      required_fields:
+        - amount
+        - method
+      optional_fields:
+        - currency
+        - payment_link_id
+      field_types:
+        amount: number
+        currency: string
+        method: string
+        payment_link_id: string
+    payment_completed:
+      required_fields:
+        - amount
+        - method
+        - status
+      optional_fields:
+        - currency
+        - transaction_reference
+      field_types:
+        amount: number
+        currency: string
+        method: string
+        status: string
+        transaction_reference: string
+      enums:
+        status:
+          - success
+          - failed
+          - pending
+
+  ingestion_rules:
+    reject_if_missing_required_fields: true
+    reject_if_event_type_not_allowed: true
+    reject_if_channel_not_allowed: true
+    reject_if_metadata_not_object: true
+    normalize_timestamp_to_utc: true
+    deduplicate_on:
+      - event_type
+      - conversation_id
+      - message_id
+      - event_timestamp
+
+  quality_checks:
+    - Ensure booking_completed has reservation_id
+    - Ensure payment_completed status matches payments.payment_status
+    - Ensure stay-linked events include stay_id whenever stay_status is active
+    - Ensure customer_id is present when identity is known
+
+  logging_triggers:
+    inquiry: guest asks a question requiring assistant response
+    booking_started: guest explicitly begins booking flow
+    booking_completed: booking confirmation is received from system
+    service_request: guest asks for an operational hotel service
+    room_service: guest requests room service action (e.g., cleaning)
+    food_order: guest places an in-room dining order
+    complaint: guest reports dissatisfaction or negative incident
+    recommendation_click: guest engages with a recommended option/link
+    payment_initiated: assistant shares or opens payment step
+    payment_completed: payment success callback or confirmed status received
 
   behavior:
 
@@ -360,3 +728,15 @@ data_capture:
       Always link events to:
       - customer_id (if known)
       - stay_id (if active stay exists)
+
+    stay_anchor: >
+      During an active visit, stay_id is the primary anchor for events and
+      payments. Prefer stay-linked writes whenever stay context exists.
+
+    idempotency: >
+      Prevent duplicate events for the same action by using message_id and/or
+      transaction_reference when available.
+
+    ordering: >
+      Preserve event order within a conversation so journey analytics remain
+      accurate.
