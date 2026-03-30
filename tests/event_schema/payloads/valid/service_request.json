@@ -1,0 +1,16 @@
+{
+  "event_type": "service_request",
+  "event_timestamp": "2026-03-30T20:18:00Z",
+  "channel": "telegram",
+  "conversation_id": "conv_service_001",
+  "customer_id": "cus_101",
+  "stay_id": "stay_555",
+  "source": "guest",
+  "event_metadata": {
+    "request_type": "extra_towels",
+    "priority": "normal",
+    "preferred_time": "2026-03-30T21:00:00Z",
+    "room_number": "502",
+    "notes": "Please bring two extra towels."
+  }
+}

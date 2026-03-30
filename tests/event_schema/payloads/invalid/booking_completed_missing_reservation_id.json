@@ -1,0 +1,16 @@
+{
+  "event_type": "booking_completed",
+  "event_timestamp": "2026-03-30T20:21:00Z",
+  "channel": "whatsapp",
+  "conversation_id": "conv_booking_002",
+  "customer_id": "cus_101",
+  "stay_id": "stay_555",
+  "source": "system",
+  "event_metadata": {
+    "check_in_date": "2026-04-10",
+    "check_out_date": "2026-04-13",
+    "room_type": "Deluxe King",
+    "total_amount": 540.0,
+    "currency": "USD"
+  }
+}

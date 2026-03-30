@@ -1,0 +1,15 @@
+{
+  "event_type": "payment_initiated",
+  "event_timestamp": "2026-03-30T20:15:00Z",
+  "channel": "whatsapp",
+  "conversation_id": "conv_test_001",
+  "customer_id": "cus_101",
+  "stay_id": "stay_555",
+  "source": "assistant",
+  "event_metadata": {
+    "amount": 25.0,
+    "currency": "USD",
+    "method": "card",
+    "payment_link_id": "pay_link_001"
+  }
+}

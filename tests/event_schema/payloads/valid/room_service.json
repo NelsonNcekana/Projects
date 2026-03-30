@@ -1,0 +1,16 @@
+{
+  "event_id": "evt-room-service-001",
+  "event_type": "room_service",
+  "event_timestamp": "2026-03-30T20:18:10Z",
+  "channel": "whatsapp",
+  "conversation_id": "conv-room-service-001",
+  "customer_id": "cus-101",
+  "stay_id": "stay-555",
+  "source": "guest",
+  "event_metadata": {
+    "service_type": "cleaning",
+    "priority": "normal",
+    "room_number": "204",
+    "preferred_time": "2026-03-30T21:00:00Z"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "event_id": "evt_invalid_002",
+  "event_type": "unknown_event",
+  "event_timestamp": "2026-03-30T20:30:00Z",
+  "channel": "whatsapp",
+  "conversation_id": "conv_invalid_002",
+  "source": "guest",
+  "event_metadata": {
+    "question": "Test invalid event type",
+    "response_time_seconds": 2.2
+  }
+}

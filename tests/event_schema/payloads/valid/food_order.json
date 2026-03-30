@@ -1,0 +1,16 @@
+{
+  "event_id": "evt_food_order_001",
+  "event_type": "food_order",
+  "event_timestamp": "2026-03-30T20:25:00Z",
+  "channel": "whatsapp",
+  "conversation_id": "conv_987",
+  "customer_id": "cus_101",
+  "stay_id": "stay_555",
+  "source": "assistant",
+  "event_metadata": {
+    "items": ["Burger", "Coke"],
+    "amount": 25.0,
+    "currency": "USD",
+    "delivery_time": "2026-03-30T20:45:00Z"
+  }
+}

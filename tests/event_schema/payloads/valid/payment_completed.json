@@ -1,0 +1,19 @@
+{
+  "event_id": "evt_payment_completed_001",
+  "event_type": "payment_completed",
+  "event_timestamp": "2026-03-30T20:35:00Z",
+  "channel": "whatsapp",
+  "conversation_id": "conv_payment_001",
+  "customer_id": "cus_101",
+  "stay_id": "stay_555",
+  "reservation_id": "res_777",
+  "message_id": "msg_payment_completed_001",
+  "source": "system",
+  "event_metadata": {
+    "amount": 225.5,
+    "currency": "USD",
+    "method": "card",
+    "status": "success",
+    "transaction_reference": "tx_90001"
+  }
+}

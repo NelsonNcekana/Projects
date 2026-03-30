@@ -1,0 +1,21 @@
+{
+  "event_id": "evt_booking_completed_001",
+  "event_type": "booking_completed",
+  "event_timestamp": "2026-03-30T20:22:00Z",
+  "channel": "whatsapp",
+  "conversation_id": "conv_987",
+  "customer_id": "cus_101",
+  "stay_id": "stay_555",
+  "reservation_id": "res_20260330_001",
+  "source": "system",
+  "event_metadata": {
+    "reservation_id": "res_20260330_001",
+    "check_in_date": "2026-04-10",
+    "check_out_date": "2026-04-13",
+    "room_type": "deluxe_king",
+    "total_amount": 1299.99,
+    "currency": "USD",
+    "guests": 2,
+    "rate_plan": "flexible"
+  }
+}

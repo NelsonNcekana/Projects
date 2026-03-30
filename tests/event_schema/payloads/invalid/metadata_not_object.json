@@ -1,0 +1,7 @@
+{
+  "event_type": "inquiry",
+  "event_timestamp": "2026-03-30T20:15:00Z",
+  "channel": "whatsapp",
+  "conversation_id": "conv_invalid_004",
+  "event_metadata": "this should be an object"
+}

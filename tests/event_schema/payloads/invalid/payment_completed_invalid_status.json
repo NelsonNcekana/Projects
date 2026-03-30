@@ -1,0 +1,17 @@
+{
+  "event_id": "evt_invalid_007",
+  "event_type": "payment_completed",
+  "event_timestamp": "2026-03-30T20:15:00Z",
+  "channel": "whatsapp",
+  "conversation_id": "conv_987",
+  "customer_id": "cus_101",
+  "stay_id": "stay_555",
+  "source": "system",
+  "event_metadata": {
+    "amount": 320.00,
+    "currency": "USD",
+    "method": "card",
+    "status": "ok",
+    "transaction_reference": "txn_444"
+  }
+}

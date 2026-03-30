@@ -1,0 +1,18 @@
+{
+  "event_id": "evt_complaint_001",
+  "event_type": "complaint",
+  "event_timestamp": "2026-03-30T20:31:00Z",
+  "channel": "whatsapp",
+  "conversation_id": "conv_1007",
+  "customer_id": "cus_1007",
+  "stay_id": "stay_1007",
+  "reservation_id": "res_1007",
+  "message_id": "msg_1007",
+  "source": "guest",
+  "event_metadata": {
+    "summary": "The room AC is too noisy at night.",
+    "category": "maintenance",
+    "severity": "high",
+    "incident_time": "2026-03-30T20:20:00Z"
+  }
+}

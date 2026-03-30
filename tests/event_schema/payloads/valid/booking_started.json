@@ -1,0 +1,16 @@
+{
+  "event_type": "booking_started",
+  "event_timestamp": "2026-03-30T20:20:00Z",
+  "channel": "telegram",
+  "conversation_id": "conv_002",
+  "customer_id": "cus_002",
+  "stay_id": null,
+  "source": "guest",
+  "event_metadata": {
+    "check_in_date": "2026-04-10",
+    "check_out_date": "2026-04-12",
+    "guests": 2,
+    "room_type": "deluxe",
+    "promo_code": "APRIL10"
+  }
+}

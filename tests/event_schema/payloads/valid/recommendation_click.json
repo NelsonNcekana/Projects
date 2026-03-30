@@ -1,0 +1,17 @@
+{
+  "event_id": "evt_recommendation_click_001",
+  "event_type": "recommendation_click",
+  "event_timestamp": "2026-03-30T20:22:00Z",
+  "channel": "telegram",
+  "conversation_id": "conv_1008",
+  "customer_id": "cus_108",
+  "stay_id": "stay_508",
+  "reservation_id": "res_308",
+  "message_id": "msg_5008",
+  "source": "guest",
+  "event_metadata": {
+    "recommendation_id": "rec_spa_01",
+    "recommendation_type": "spa",
+    "target": "https://hotel.example/spa-booking"
+  }
+}

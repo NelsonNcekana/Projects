@@ -1,0 +1,9 @@
+{
+  "event_type": "inquiry",
+  "event_timestamp": "2026-03-30T20:15:00Z",
+  "channel": "whatsapp",
+  "event_metadata": {
+    "question": "What time is breakfast?",
+    "response_time_seconds": 4.2
+  }
+}

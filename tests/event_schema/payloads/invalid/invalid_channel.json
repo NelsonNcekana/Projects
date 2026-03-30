@@ -1,0 +1,10 @@
+{
+  "event_type": "inquiry",
+  "event_timestamp": "2026-03-30T21:26:00Z",
+  "channel": "sms",
+  "conversation_id": "conv_invalid_channel",
+  "event_metadata": {
+    "question": "Is breakfast included?",
+    "response_time_seconds": 2.7
+  }
+}
